@@ -28,18 +28,18 @@ def callback(ch, method, properties, body):
         for mongohost in CONF['output']['mongodb']['host']:
 		if connection_string != '' :
 			connection_string = connection_string + ','
-                connection_string = mongohost['host'] + ':' + mongohost['port']
+                connection_string += mongohost['host'] + ':' + mongohost['port']
 
         #client = pymongo.MongoClient([MONGO_RS1_HOST+':'+MONGO_RS1_PORT,MONGO_RS2_HOST+':'+MONGO_RS2_PORT])
 	print connection_string
         client = pymongo.MongoClient([connection_string])
-        db = client.odisdb
+        db = client[CONF['output']['mongodb']['database']]
         #Auth in Mongo
 	auth = CONF['output']['mongodb']
 	print auth
 	db.authenticate(auth['user'], auth['passwd'])
 	#db.authenticate(MONGO_USER, MONGO_PASSWD)
-        coll = db.records
+        coll = db[CONF['output']['mongodb']['collection']]
 
         # Insert data to Mongo
 	if len(json_data) > 0:
